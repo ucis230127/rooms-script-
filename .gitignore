@@ -1,0 +1,332 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+
+--Window
+local Window = Rayfield:CreateWindow({
+   Name = "Interminable Rooms | V4 (5Green's Mod)",
+   LoadingTitle = "An Interminable Rooms Script",
+   LoadingSubtitle = "by Nenarus#3186",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "天狼星枢纽",
+      Subtitle = "Key System",
+      Note = "Join the discord (discord.gg/sirius)",
+      FileName = "SiriusKey",
+      SaveKey = true,
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = "Hello"
+   }
+})
+
+--Welcome Notification
+Rayfield:Notify({
+   Title = "无止境的房间脚本",
+   Content = "Successfully loaded! This script is uncomplete, so expect bugs.",
+   Duration = 5,
+   Image = 4483362458,
+})
+
+
+
+--Tabs 
+local Tab = Window:CreateTab("main", 4483362458)
+local Tab4 = Window:CreateTab("5Green's Mods :)", 4483362458)
+local Tab2 = Window:CreateTab("Entity Tips", 4483362458)
+local Tab5 = Window:CreateTab("Entity Tips (more in depth)", 4483362458)
+local Tab3 = Window:CreateTab("Credits", 4483362458)
+local Tab6 = Window:CreateTab("Change Logs", 4483362458)
+
+
+--Interminable Rooms Game Files
+local EntitiesFolder = Workspace:WaitForChild("Entities")
+local sd
+
+
+local Section = Tab:CreateSection("Entity Notifiers")
+
+
+local connection
+
+local Toggle = Tab:CreateToggle({
+    Name = "Notify Entities",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        if Value then
+            connection = EntitiesFolder.ChildAdded:Connect(function(entity)
+                Rayfield:Notify({
+                   Title = 实体提示,
+                   Content = "实体生成了.",
+                   Duration = 5,
+                   Image = 4483362458,
+                })
+            end)
+        else
+            connection:Disconnect()
+        end
+    end,
+})
+
+local Toggle = Tab:CreateToggle({
+    Name = "通知实体被删除",
+    CurrentValue = false,
+    Flag = "Toggle2",
+    Callback = function(Value)
+        if Value then
+            connection = EntitiesFolder.ChildRemoved:Connect(function(entity)
+                Rayfield:Notify({
+                   Title = entity.Name,
+                   Content = "Has deleted.",
+                   Duration = 5,
+                   Image = 4483362458,
+                })
+            end)
+        else
+            connection:Disconnect()
+        end
+    end,
+})
+
+
+local Section = Tab4:CreateSection("Entity Notifier (Global Chat)")
+
+
+
+
+--Toggles
+local connection0 = nil  -- add a variable to keep track of the connection
+
+local Toggle = Tab4:CreateToggle({
+    Name = "在聊天公布实体刷新",
+    CurrentValue = false,
+    Flag = "Toggle3",
+    Callback = function(Value)
+        if Value and not connection0 then  -- if toggle is turned on and there is no connection
+            connection0 = EntitiesFolder.ChildAdded:Connect(function(entity)
+                if entity.Name ~= "TLUB-120" and entity.Name ~= "A-120 Minion" and entity.Name ~= "John" and entity.Name ~= "Noah" and entity.Name ~= "TLAB-278" and entity.Name ~= "ULB-278" and entity.Name ~= "A-245" and entity.Name ~= "A-258" and entity.Name ~= "JohnLocker" and entity.Name ~= "A-278" and entity.Name ~= "A-150" then
+                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(entity.Name .. " 实体生成了 -_-", "All")
+                end
+            end)
+        elseif not Value and connection0 then  -- if toggle is turned off and there is a connection
+            connection0:Disconnect()  -- disconnect the connection
+            connection0 = nil  -- set the connection to nil
+        end
+    end,
+})
+
+
+local connection1 = nil
+
+local Toggle = Tab4:CreateToggle({
+    Name = "在聊天公布实体消失",
+    CurrentValue = false,
+    Flag = "Toggle4",
+    Callback = function(Value)
+        if Value and not connection1 then  -- if toggle is turned on and there is no connection
+            connection1 = EntitiesFolder.ChildRemoved:Connect(function(entity)
+                if entity.Name ~= "TLUB-120" and entity.Name ~= "A-120 Minion" and entity.Name ~= "John" and entity.Name ~= "Noah" and entity.Name ~= "TLAB-278" and entity.Name ~= "ULB-278" and entity.Name ~= "A-245" and entity.Name ~= "A-258" and entity.Name ~= "JohnLocker" and entity.Name ~= "A-278" and entity.Name ~= "A-150" then
+                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(entity.Name .. " 消失了 :)", "All")
+                end
+            end)
+        elseif not Value and connection1 then  -- if toggle is turned off and there is a connection
+            connection1:Disconnect()  -- disconnect the connection
+            connection1 = nil  -- set the connection to nil
+        end
+    end,
+})
+
+
+local Section = Tab4:CreateSection("instant interact")
+
+local connection3
+local Toggle = Tab4:CreateToggle({
+    Name = "及时互动",
+    CurrentValue = false,
+    Flag = "Toggle6",
+    Callback = function(Value9)
+        if Value9 then
+            connection3 = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
+                fireproximityprompt(prompt)
+            end)
+        else
+            if connection3 then
+                connection3:Disconnect()
+                connection3 = nil
+            end
+        end
+    end,
+})
+
+
+
+
+local Section = Tab4:CreateSection("full heart")
+
+local connection2
+local Button = Tab4:CreateButton({
+    Name = "满血",
+    Callback = function()
+            game.Players.LocalPlayer.Character.Humanoid.Health = 100
+  		end,
+	 })
+
+
+
+
+
+local Section = Tab4:CreateSection("Ignore Entities")
+
+local connection4
+local Toggle = Tab4:CreateToggle({
+    Name = "上帝模式 (没有完事)",
+    CurrentValue = false,
+    Flag = "Toggle8",
+    Callback = function(Value11)
+        if Value11 then
+            workspace.Values.A10.Value = true
+        else
+            if connection4 then
+                connection4:Disconnect()
+                connection4 = nil
+            end
+        end
+    end,
+})
+
+
+
+
+local Section = Tab4:CreateSection("Ignore Jumpscares")
+
+
+
+local connection7
+local Toggle = Tab4:CreateToggle({
+    Name = "没有跳杀",
+    CurrentValue = false,
+    Flag = "Toggle389",
+    Callback = function(Value783)
+        if Value783 then
+            local Players = game:GetService("Players")
+            local Player = Players.LocalPlayer
+            local PlayerGui = Player.PlayerGui
+            local Jumpscares = PlayerGui:FindFirstChild("Jumpscares")
+
+            -- Disable each jumpscare individually by disabling the descendants
+            if Jumpscares and Jumpscares:IsA("Folder") then
+                for _, jumpscare in ipairs(Jumpscares:GetDescendants()) do
+                    if jumpscare:IsA("ScreenGui") or jumpscare:IsA("Sound") then
+                        jumpscare.Enabled = false
+                    end
+                end
+            end
+
+            -- Create a connection to re-enable the jumpscare elements if they're changed
+            connection7 = PlayerGui.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("ScreenGui") or descendant:IsA("Sound") then
+                    descendant.Enabled = false
+                end
+            end)
+        else
+            if connection7 then
+                connection7:Disconnect()
+                connection7 = nil
+            end
+        end
+    end,
+})
+
+
+
+
+local Paragraph = Tab4:CreateParagraph({Title = "Warning", Content = "\nFor some reason when you turn the button above on, it works, then when you turn it off, the code this toggles remains active, then from then on the on/off is reversed and idk why. Also I'm too lazt to fix ."})
+
+
+
+
+
+
+
+
+
+
+
+
+local connection27
+local Toggle = Tab4:CreateToggle({
+    Name = "跳杀没有声音",
+    CurrentValue = false,
+    Flag = "Toggle347",
+    Callback = function(Value892)
+        if Value892 then
+            getgenv().disabled = true;
+            getgenv().debug = true;
+            
+            local function DisableJumpscareSounds()
+                local Player = game:GetService('Players').LocalPlayer;
+                local JumpScare_Gui = Player.PlayerGui:FindFirstChild('Jumpscares');
+                local Sounds = {};
+            
+                for i, v in next, JumpScare_Gui:GetDescendants() do
+                    if v.Name == 'Jumpscare' then
+                        table.insert(Sounds, v);
+                    end
+                end
+            
+                while getgenv().disabled do
+                    for i, v in next, Sounds do
+                        if getgenv().debug then
+                            print('[Debug]: Fixing Sound');
+                        end
+            
+                        v.MaxDistance = 0;
+                        v.Playing = false;
+                        v.Volume = 0;
+                    end
+            
+                    task.wait(2.5);
+                end
+            end
+            
+            spawn(function()
+                while getgenv().disabled do
+                    DisableJumpscareSounds();
+                end
+            end)
+        else
+            getgenv().disabled = false;
+        end
+    end,
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local Section = Tab4:CreateSection("Walkspeed changer (higher values)")
+
+local Slider = Tab4:CreateSlide
